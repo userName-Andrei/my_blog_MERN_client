@@ -28,7 +28,9 @@ const Header = () => {
     return (
         <AppBar position="fixed">
             <Container maxWidth='lg'>
-                <Toolbar>
+                <Toolbar
+                    disableGutters={true}
+                >
                     <Typography 
                         variant='h5'
                         sx={{mr: 'auto'}}
