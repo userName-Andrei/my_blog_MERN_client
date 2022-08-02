@@ -19,7 +19,7 @@ function App() {
         <>
             <Header/>
             <BrowserRouter>
-                <Container maxWidth="md">
+                <Container maxWidth="lg">
                     <Routes>
                         <Route path='/' element={<Main/>} />
                         <Route path='*' element={<Main/>} />
