@@ -6,7 +6,7 @@ const CommentBlock = ({comments, isLoading}) => {
 
     return (
         <>
-            <Typography variant='h4'>Комментарии:</Typography>
+            <Typography variant='h5'>Комментарии:</Typography>
             <List>
                 {(isLoading ? [...Array(5)] : comments).map((comment, i, arr) => (
                     isLoading ? (

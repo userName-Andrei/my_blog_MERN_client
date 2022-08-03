@@ -11,7 +11,7 @@ const TagBlock = ({tags, isLoading}) => {
     
     return (
         <>
-            <Typography variant='h4' gutterBottom>Последние теги:</Typography>
+            <Typography variant='h5' gutterBottom>Последние теги:</Typography>
             <Grid container>
                 {(isLoading ? [...Array(5)] : tags).map((tag, i) => (
                     <Grid item 
