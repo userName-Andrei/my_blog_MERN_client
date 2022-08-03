@@ -45,7 +45,7 @@ const FullPost = () => {
     const commentLoading = false;
 
     return (
-        <Stack mt={10}>
+        <Stack mt={10} mb={4}>
             <Post 
                 user={post.author} 
                 image={post.previewUrl}
