@@ -1,0 +1,34 @@
+$orange: #ff9800;
+
+.root {
+    position: relative;
+    
+    &:not(:last-child) {
+        margin-bottom: 16px;
+    }
+
+    &:hover {
+        border: 1px solid $orange;
+        box-shadow: 0 0 0 1px $orange;
+
+        .editButtons {
+            opacity: 1;
+        }
+    }
+}
+
+.skeleton {
+    &:not(:last-child) {
+        margin-bottom: 16px;
+    }
+}
+
+.editButtons {
+    position: absolute;
+    z-index: 5;
+    right: 15px;
+    top: 15px;
+    border-radius: 10px;
+    opacity: 0;
+    transition: all 0.15s ease-in-out;
+}
