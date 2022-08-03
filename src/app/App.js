@@ -8,7 +8,7 @@ import {
 import Header from '../components/Header';
 import {
     Main,
-    Post,
+    FullPost,
     AddPost,
     Login,
     Register
@@ -23,8 +23,8 @@ function App() {
                     <Routes>
                         <Route path='/' element={<Main/>} />
                         <Route path='*' element={<Main/>} />
-                        <Route path='/posts/:tag' element={<Main/>} />
-                        <Route path='/posts/:id' element={<Post/>} />
+                        <Route path='/posts/tags/:tag' element={<Main/>} />
+                        <Route path='/posts/:id' element={<FullPost/>} />
                         <Route path='/posts/:id/edit' element={<AddPost/>} />
                         <Route path='/posts/add-post' element={<AddPost/>} />
                         <Route path='/login' element={<Login/>} />
