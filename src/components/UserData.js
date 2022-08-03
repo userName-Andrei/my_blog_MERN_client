@@ -1,10 +1,10 @@
-import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText, Typography} from '@mui/material';
+import { Avatar, Box, Divider, List, ListItem, ListItemAvatar, ListItemText, Typography} from '@mui/material';
 import React from 'react';
 
 const UserData = (props) => {
     const {user, postDate, children} = props;
     return (
-        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} disablePadding>
+        <List sx={{ width: '100%', bgcolor: 'background.paper' }} disablePadding>
             <ListItem alignItems="flex-start">
                 <ListItemAvatar>
                     <Avatar alt={user.name} src={user.avatarUrl} />
@@ -15,16 +15,15 @@ const UserData = (props) => {
                     <>
                         {postDate}
                         {children && 
-                            <div>
+                            <Box mt={1}>
                                 <Typography 
-                                            variant='body2' 
-                                            color='text.primary' 
-                                            mt={1}
-                                            component='span'
-                                        >
-                                            {children}
-                                        </Typography>
-                            </div>
+                                    variant='body2' 
+                                    color='text.primary'
+                                    component='span'
+                                >
+                                    {children}
+                                </Typography>
+                            </Box>
                         }
                     </>
                 }
