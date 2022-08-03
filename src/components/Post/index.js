@@ -32,7 +32,8 @@ const Post = ({
     views,
     comments, 
     isLoading,
-    isEditable
+    isEditable,
+    isFullPost
 }) => {
     const theme = useTheme();
 
@@ -43,7 +44,8 @@ const Post = ({
     return (
             <Card 
                 variant='outlined'
-                className={classes.root}
+                className={!isFullPost ? classes.root : null}
+                sx={isFullPost && {border: 'none'}}
             >
                 {isEditable ? (
                     <Box className={classes.editButtons}>
@@ -64,7 +66,7 @@ const Post = ({
                     direction="row"
                     sx={{
                         position: 'relative',
-                        minHeight: '200px',
+                        height: isFullPost ? '40vh' : '200px',
                         alignItems: 'flex-end'
                     }}
                 >
@@ -82,6 +84,7 @@ const Post = ({
                     </Typography>
                     <CardMedia 
                         image={image}
+                        component='img'
                         sx={{
                             position: 'absolute',
                             top: 0,
