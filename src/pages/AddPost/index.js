@@ -1,10 +1,12 @@
-import {useState, useRef} from 'react';
+import {useState, useRef, useCallback, useMemo} from 'react';
 import {useLocation} from 'react-router-dom';
+import SimpleMDE from "react-simplemde-editor";
 
 import { Box, Button, Container, Stack, TextField } from '@mui/material';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 
 import classes from './AddPost.module.scss';
+import "easymde/dist/easymde.min.css";
 
 const AddPost = () => {
     const [formData, setFormData] = useState({
@@ -17,6 +19,24 @@ const AddPost = () => {
     const inputFileRef = useRef();
     const location = useLocation().pathname.indexOf('add-post') !== -1 ? 'add-post' : 'edit';
     const reader = new FileReader();
+
+    const optionsMDE = useMemo(() => ({
+        spellChecker: false,
+        maxHeight: '300px',
+        placeholder: 'Введите текст',
+        status: false,
+        autosave: {
+            enable: true,
+            delay: 1000
+        }
+    }), []);
+
+    const onChangeMDE = useCallback((value) => {
+        setFormData(({
+            ...formData,
+             text: value
+        }))
+    }, [])
 
     const onChangePreview = (e) => {
         setFormData(({
@@ -37,6 +57,7 @@ const AddPost = () => {
             preview: {}
         }))
         setPreview('')
+        inputFileRef.current.value = ''
     }
     
     return (
@@ -65,7 +86,7 @@ const AddPost = () => {
                                 variant="contained" 
                                 component="label" 
                                 endIcon={<PhotoCamera/>}
-                                color={preview ? 'error' : 'primary'}
+                                color={preview ? 'error' : 'secondary'}
                                 onClick={() => preview ? onDeletePreview() : inputFileRef.current.click()}
                                 sx={{
                                     alignSelf: 'flex-start',
@@ -97,6 +118,7 @@ const AddPost = () => {
                         onChange={(e) => setFormData(({...formData, title: e.target.value}))}
                         value={formData.title}
                         label='Введите заголовок статьи'
+                        color='secondary'
                         maxRows={3}
                         helperText=''
                         multiline
@@ -108,21 +130,14 @@ const AddPost = () => {
                         onChange={(e) => setFormData(({...formData, tags: e.target.value}))}
                         value={formData.tags}
                         label='Введите теги к статье'
+                        color='secondary'
                         helperText='через запятую'
                         multiline
                     />
-                    <TextField
-                        variant="outlined"
-                        name='text'
-                        onChange={(e) => setFormData(({...formData, text: e.target.value}))}
-                        value={formData.text}
-                        label='Введите текст статьи'
-                        rows={5}
-                        helperText=''
-                        multiline
-                    />
+                    <SimpleMDE className={classes.editor} value={formData.text} options={optionsMDE} onChange={onChangeMDE} />
                     <Button
                         variant="contained"
+                        color='secondary'
                     >
                         {location === 'add-post' ? 'Сохранить' : 'Измененить'}
                     </Button>
