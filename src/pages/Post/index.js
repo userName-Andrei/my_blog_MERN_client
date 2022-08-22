@@ -2,6 +2,7 @@ import { Stack } from '@mui/material';
 import React from 'react';
 import AddComment from '../../components/AddComment';
 import CommentBlock from '../../components/CommentBlock';
+import ReactMarkdown from 'react-markdown';
 import Post from '../../components/Post';
 
 const FullPost = () => {
@@ -52,7 +53,7 @@ const FullPost = () => {
                 postDate={post.createAt}
                 title={post.title}
                 tags={post.tags}
-                text={post.text}
+                text={<ReactMarkdown children={post.text} />}
                 views={post.viewsCount}
                 comments={post.commentsCount}
                 isLoading={postLoading}
