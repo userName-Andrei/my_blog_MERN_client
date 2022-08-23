@@ -8,8 +8,8 @@ const CommentBlock = ({comments, isLoading}) => {
     if (comments.message) {
         return (
             <>
-                <Typography variant='h5' gutterBottom>Комментарии:</Typography>
-                <Typography variant='body1' ml={2}>{comments.message}</Typography>
+                <Typography variant='h5' gutterBottom >Комментарии:</Typography>
+                <Typography variant='body1' ml={2} mb={2} >{comments.message}</Typography>
             </>
         )
     }
