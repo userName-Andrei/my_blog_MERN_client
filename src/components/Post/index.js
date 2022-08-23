@@ -89,7 +89,7 @@ const Post = ({
                             mb: 1
                         }}
                     >
-                        <Link to={`/post/${id}`}>{title}</Link>
+                        <Link to={`/posts/${id}`}>{title}</Link>
                     </Typography>
                     <CardMedia 
                         image={image}
@@ -114,7 +114,7 @@ const Post = ({
                 </Stack>
                 <CardContent>
                     <Typography mb={1}>
-                    <Link to={`/post/${id}`}>{textSlicer(text, 100)}</Link>
+                    <Link to={`/posts/${id}`}>{textSlicer(text, 100)}</Link>
                     </Typography>
                     <Stack direction='row' spacing={1}>
                         {tags.map((tag, i) => (
