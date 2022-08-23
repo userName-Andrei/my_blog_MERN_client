@@ -1,11 +1,8 @@
 import { 
-    Avatar, 
     Box, 
     Card, 
-    CardContent, 
-    CardHeader, 
+    CardContent,
     CardMedia, 
-    Grid, 
     IconButton, 
     Stack, 
     Typography, 
@@ -17,12 +14,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import React from 'react';
+import {Link} from 'react-router-dom';
 import UserData from '../UserData';
 import SkeletonPost from './Skeleton';
 
 import classes from './Post.module.scss';
 
 const Post = ({
+    id,
     user, 
     image, 
     postDate, 
@@ -37,6 +36,15 @@ const Post = ({
 }) => {
     const theme = useTheme();
 
+    const textSlicer = (text, limit) => {
+        if (text.length > limit) {
+            text = text.slice(0, limit).split(' ');
+            return text.slice(0, text.length - 1).join(' ') + '...';
+        }
+        
+        return text;
+    }
+
     if (isLoading) {
         return <SkeletonPost />
     }
@@ -50,14 +58,15 @@ const Post = ({
                 {isEditable ? (
                     <Box className={classes.editButtons}>
                         <IconButton color="primary">
-                            <EditIcon />
+                            <Link to={`/posts/${id}/edit`}>
+                                <EditIcon />
+                            </Link>
                         </IconButton>
                         <IconButton color="secondary">
                             <DeleteIcon />
                         </IconButton>
                     </Box>
                 ) : null}
-
                 <UserData 
                     user={user}
                     postDate={postDate} 
@@ -80,7 +89,7 @@ const Post = ({
                             mb: 1
                         }}
                     >
-                        {title}
+                        <Link to={`/post/${id}`}>{title}</Link>
                     </Typography>
                     <CardMedia 
                         image={image}
@@ -105,18 +114,19 @@ const Post = ({
                 </Stack>
                 <CardContent>
                     <Typography mb={1}>
-                        {text}
+                    <Link to={`/post/${id}`}>{textSlicer(text, 100)}</Link>
                     </Typography>
                     <Stack direction='row' spacing={1}>
                         {tags.map((tag, i) => (
                             <Typography 
-                                variant='subtitle2' 
+                                variant='overline' 
                                 mb={1} 
                                 key={i} 
-                                component='a' 
-                                href='/'
+                                color='secondary'
                             >
-                                #{tag}
+                                <Link to={`/posts/tags/${tag}`}>
+                                    #{tag}
+                                </Link>
                             </Typography>
                         ))}
                     </Stack>
@@ -128,15 +138,15 @@ const Post = ({
                                 alignItems='center'
                                 mr={2}
                             >
-                                <VisibilityIcon sx={{mr: 1}} />
-                                <Typography variant='subtitle'>{views}</Typography>
+                                <VisibilityIcon sx={{mr: 1}} color='secondary' />
+                                <Typography variant='subtitle' color='secondary'>{views}</Typography>
                             </Stack>
                             <Stack
                                 direction='row'
                                 alignItems='center'
                             >
-                                <CommentIcon sx={{mr: 1}} />
-                                <Typography variant='subtitle'>{comments}</Typography>
+                                <CommentIcon sx={{mr: 1}} color='secondary' />
+                                <Typography variant='subtitle' color='secondary'>{comments}</Typography>
                             </Stack>
                         </Stack>
                 </CardContent>

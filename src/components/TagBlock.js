@@ -1,11 +1,13 @@
 import { 
+    Button,
     Grid,
-    ListItemButton,
     Skeleton, 
+    Stack, 
     Typography 
 } from '@mui/material';
 import TagIcon from "@mui/icons-material/Tag";
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const TagBlock = ({tags, isLoading}) => {
     
@@ -19,14 +21,18 @@ const TagBlock = ({tags, isLoading}) => {
                         md={12}
                         key={i}
                     >
-                        <ListItemButton>
+                        <Stack
+                            direction='row'
+                            alignItems='center'
+                            ml={2}
+                        >
                             <TagIcon />
                             {isLoading ? (
                                 <Skeleton width={100} />
                             ) : (
-                                <Typography variant='body1'>{tag}</Typography>
+                                <Link to={`/posts/tags/${tag}`}><Button variant='text' color='secondary'>{tag}</Button></Link>
                             )}
-                        </ListItemButton>
+                        </Stack>
                     </Grid>
                 ))}
             </Grid>
