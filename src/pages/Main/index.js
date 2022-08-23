@@ -38,7 +38,7 @@ const Main = () => {
         dispatch(fetchComments({params: {limit: 5}}));
     }, [param]);
 
-    const getPosts = (lastpost = 0, limit = 1) => {
+    const getPosts = (lastpost = 0, limit = 5) => {
         
         if (param) {
             dispatch(fetchPostsByTag({
