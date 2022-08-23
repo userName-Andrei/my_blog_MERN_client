@@ -1,10 +1,12 @@
 import { Container } from '@mui/system';
-import React from 'react';
+import {useEffect} from 'react';
 import {
     BrowserRouter,
     Routes,
     Route
 } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { fetchAuth } from '../store/slices/authSlice';
 import Header from '../components/Header';
 import {
     Main,
@@ -15,10 +17,16 @@ import {
 } from '../pages';
 
 function App() {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchAuth())
+    }, [])
+
     return (
         <>
-            <Header/>
             <BrowserRouter>
+                <Header/>
                 <Container maxWidth="lg">
                     <Routes>
                         <Route path='/' element={<Main/>} />

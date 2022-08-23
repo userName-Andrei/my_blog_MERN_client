@@ -11,8 +11,8 @@ export const fetchLogin = createAsyncThunk(
     async (data) => {
         const user = await axios.post('/auth/login', data);
 
-        if (user.token) {
-            window.localStorage.setItem('token', user.token)
+        if (user.data.token) {
+            window.localStorage.setItem('token', user.data.token)
         }
 
         return user.data;
@@ -33,8 +33,8 @@ export const fetchRegister = createAsyncThunk(
     async (data) => {
         const user = await axios.post('/auth/register', data);
 
-        if (user.token) {
-            window.localStorage.setItem('token', user.token)
+        if (user.data.token) {
+            window.localStorage.setItem('token', user.data.token)
         }
 
         return user.data;
@@ -46,7 +46,12 @@ export const isAuthChecker = (state) => Boolean(state.auth.user);
 const authSlice = createSlice({
     name: 'auth',
     initialState,
-    reducers: {},
+    reducers: {
+        'logout': (state) => {
+            state.user = null
+            window.localStorage.removeItem('token')
+        }
+    },
     extraReducers: {
         [fetchLogin.pending]: (state) => {
             state.user = null
@@ -60,17 +65,9 @@ const authSlice = createSlice({
             state.user = null
             state.status = 'error'
         },
-        [fetchAuth.pending]: (state) => {
-            state.user = null
-            state.status = 'loading'
-        },
         [fetchAuth.fulfilled]: (state, action) => {
             state.user = action.payload
             state.status = 'loaded'
-        },
-        [fetchAuth.rejected]: (state) => {
-            state.user = null
-            state.status = 'error'
         },
         [fetchRegister.pending]: (state) => {
             state.user = null
@@ -86,5 +83,7 @@ const authSlice = createSlice({
         }
     }
 })
+
+export const {logout} = authSlice.actions;
 
 export default authSlice.reducer;

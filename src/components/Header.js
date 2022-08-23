@@ -11,9 +11,13 @@ import {
 } from '@mui/material';
 import { Container } from '@mui/system';
 import {useState} from 'react';
+import {Link} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux'
+import { logout, isAuthChecker } from '../store/slices/authSlice';
 
 const Header = () => {
-    const [isAuth, setIsAuth] = useState(false);
+    const dispatch = useDispatch();
+    const isAuth = useSelector(isAuthChecker);
     const [anchorElUser, setAnchorElUser] = useState(null);
 
     
@@ -35,13 +39,29 @@ const Header = () => {
                         variant='h5'
                         sx={{mr: 'auto'}}
                     >
-                        My Blog
+                        <Link to='/'>
+                            My Blog
+                        </Link>
                     </Typography>
-                    <Stack spacing={2} direction="row">
+                    <Stack 
+                        spacing={2} 
+                        direction="row"
+                    >
                         {!isAuth ? 
                         <>
-                            <Button color='inherit'>Вход</Button>
-                            <Button variant="outlined" color='secondary'>Регистрация</Button>
+                            <Link to='/login'>
+                                <Button color='inherit'>
+                                    Вход
+                                </Button>
+                            </Link>
+                            <Link to='/register'>
+                                <Button 
+                                    variant="outlined" 
+                                    color='secondary'
+                                >
+                                    Регистрация
+                                </Button>
+                            </Link>
                         </> : 
                         <>
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -63,7 +83,11 @@ const Header = () => {
                                 onClose={handleCloseUserMenu}
                             >
                                 <MenuItem onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">Написать статью</Typography>
+                                    <Link to='/posts/add-post'>
+                                        <Typography textAlign="center">
+                                            Написать статью
+                                        </Typography>
+                                    </Link>
                                 </MenuItem>
                                 <MenuItem onClick={handleCloseUserMenu}>
                                     <Button 
@@ -71,6 +95,7 @@ const Header = () => {
                                         size='small'
                                         variant="contained" 
                                         color='error'
+                                        onClick={() => dispatch(logout())}
                                     >
                                         Выход
                                     </Button>

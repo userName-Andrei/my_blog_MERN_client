@@ -6,11 +6,16 @@ import CommentBlock from '../../components/CommentBlock';
 import ReactMarkdown from 'react-markdown';
 import Post from '../../components/Post';
 import axios from '../../utils/axios';
+import dateFixer from '../../utils/dateFixer';
+import { useSelector } from 'react-redux';
+import { isAuthChecker } from '../../store/slices/authSlice';
 
 const FullPost = () => {
-    const [post, setPost] = useState({item: {}, status: 'loading'})
-    const [comments, setComments] = useState({items: [], status: 'loading'})
+    const [post, setPost] = useState({item: {}, status: 'loading'});
+    const [comments, setComments] = useState({items: [], status: 'loading'});
     const postId = useParams().id;
+    const isAuth = useSelector(isAuthChecker);
+    const userData = useSelector(state => state.auth.user);
 
     const fetchPost = async () => {
         try {
@@ -54,7 +59,7 @@ const FullPost = () => {
             <Post 
                 user={post.item.author} 
                 image={post.item.previewUrl}
-                postDate={post.item.createAt}
+                postDate={dateFixer(post.item.createdAt)}
                 title={post.item.title}
                 tags={post.item.tags}
                 text={<ReactMarkdown children={post.item.text} />}
@@ -64,7 +69,7 @@ const FullPost = () => {
                 isFullPost
             />
             <CommentBlock comments={comments.items} isLoading={comments.status === 'loading'}/>
-            {/* <AddComment user={post.author}/> */}
+            {isAuth && <AddComment user={userData}/>}
         </Stack>
     );
 };
