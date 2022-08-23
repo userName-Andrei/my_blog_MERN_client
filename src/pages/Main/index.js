@@ -101,7 +101,7 @@ const Main = () => {
                                 tags={post.tags}
                                 text={post.text}
                                 views={post.viewsCount}
-                                comments={post.commentsCount || 0}
+                                comments={post.commentCount || 0}
                                 isLoading={postLoading}
                                 isEditable
                             />
