@@ -89,7 +89,7 @@ const Post = ({
                             mb: 1
                         }}
                     >
-                        <Link to={`/posts/${id}`}>{title}</Link>
+                        {isFullPost ? title : <Link to={`/posts/${id}`}>{title}</Link>}
                     </Typography>
                     <CardMedia 
                         image={image}
@@ -114,7 +114,7 @@ const Post = ({
                 </Stack>
                 <CardContent>
                     <Typography mb={1}>
-                    <Link to={`/posts/${id}`}>{textSlicer(text, 100)}</Link>
+                        {isFullPost ? text : <Link to={`/posts/${id}`}>{textSlicer(text, 100)}</Link>}
                     </Typography>
                     <Stack direction='row' spacing={1}>
                         {tags.map((tag, i) => (
@@ -146,7 +146,7 @@ const Post = ({
                                 alignItems='center'
                             >
                                 <CommentIcon sx={{mr: 1}} color='secondary' />
-                                <Typography variant='subtitle' color='secondary'>{comments}</Typography>
+                                <Typography variant='subtitle' color='secondary'>{comments || 0}</Typography>
                             </Stack>
                         </Stack>
                 </CardContent>

@@ -121,7 +121,7 @@ const postSlice = createSlice({
         [fetchComments.rejected]: (state, action) => {
             state.comments.items = [];
             state.comments.status = 'error';
-        },
+        }
     }
 });
 

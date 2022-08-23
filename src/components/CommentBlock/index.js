@@ -4,10 +4,19 @@ import CommentItem from '../CommentItem';
 import dateFixer from '../../utils/dateFixer'
 
 const CommentBlock = ({comments, isLoading}) => {
+
+    if (comments.message) {
+        return (
+            <>
+                <Typography variant='h5' gutterBottom>Комментарии:</Typography>
+                <Typography variant='body1' ml={2}>{comments.message}</Typography>
+            </>
+        )
+    }
     
     return (
         <>
-            <Typography variant='h5'>Комментарии:</Typography>
+            <Typography variant='h5' gutterBottom>Комментарии:</Typography>
             <List>
                 {(isLoading ? [...Array(5)] : comments).map((comment, i, arr) => (
                     isLoading ? (
