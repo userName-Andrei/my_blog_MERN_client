@@ -13,6 +13,10 @@ const initialState = {
     comments: {
         items: [],
         status: 'loading'
+    },
+    newComment: {
+        comment: {},
+        status: 'waiting'
     }
 };
 
@@ -58,6 +62,27 @@ export const fetchComments = createAsyncThunk(
         )
 
         return comments.data;
+    }
+);
+
+export const fetchCommentsByPostId = createAsyncThunk(
+    'posts/fetchComments',
+    async (postId) => {
+        const comments = await axios.get(`/comments/${postId}`)
+
+        return comments.data;
+    }
+);
+
+export const createComment = createAsyncThunk(
+    'posts/createComment',
+    async ({postId, comment, author}) => {
+        const comments = await axios.post(
+            `/comments/${postId}`,
+            comment
+        )
+
+        return {...comments.data, author};
     }
 );
 
@@ -118,9 +143,30 @@ const postSlice = createSlice({
             state.comments.items = action.payload;
             state.comments.status = 'loaded';
         },
-        [fetchComments.rejected]: (state, action) => {
+        [fetchComments.rejected]: (state) => {
             state.comments.items = [];
             state.comments.status = 'error';
+        },
+        [fetchCommentsByPostId.pending]: (state) => {
+            state.comments.status = 'loading';
+        },
+        [fetchCommentsByPostId.fulfilled]: (state, action) => {
+            state.comments.items = action.payload;
+            state.comments.status = 'loaded';
+        },
+        [fetchCommentsByPostId.rejected]: (state) => {
+            state.comments.items = [];
+            state.comments.status = 'error';
+        },
+        [createComment.pending]: (state) => {
+            state.newComment.status = 'loading';
+        },
+        [createComment.fulfilled]: (state, action) => {
+            state.comments.items.push(action.payload);
+            state.newComment.status = 'loaded';
+        },
+        [createComment.rejected]: (state) => {
+            state.newComment.status = 'error';
         }
     }
 });

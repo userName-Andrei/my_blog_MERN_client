@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
 import AddComment from '../../components/AddComment';
@@ -7,12 +7,14 @@ import ReactMarkdown from 'react-markdown';
 import Post from '../../components/Post';
 import axios from '../../utils/axios';
 import dateFixer from '../../utils/dateFixer';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { isAuthChecker } from '../../store/slices/authSlice';
+import { fetchCommentsByPostId } from '../../store/slices/postSlice';
 
 const FullPost = () => {
+    const dispatch = useDispatch();
     const [post, setPost] = useState({item: {}, status: 'loading'});
-    const [comments, setComments] = useState({items: [], status: 'loading'});
+    const comments = useSelector(state => state.posts.comments);
     const postId = useParams().id;
     const isAuth = useSelector(isAuthChecker);
     const userData = useSelector(state => state.auth.user);
@@ -32,26 +34,10 @@ const FullPost = () => {
             }))
         }
     }
-    
-    const fetchComments = async () => {
-        try {
-            const response = await axios.get(`/comments/${postId}`)
-
-            setComments(state => ({
-                items: response.data,
-                status: 'loaded'
-            }))
-        } catch (error) {
-            setComments(state => ({
-                ...state,
-                status: 'error'
-            }))
-        }
-    }
 
     useEffect(() => {
         fetchPost()
-        fetchComments()
+        dispatch(fetchCommentsByPostId(postId))
     }, []);
 
     return (
@@ -69,6 +55,7 @@ const FullPost = () => {
                 isFullPost
             />
             <CommentBlock comments={comments.items} isLoading={comments.status === 'loading'}/>
+            {comments.status === 'error' && <Typography variant='body1' color='error' ml={2} mb={2}>Произошла ошибка, попробуйте перезагрузить страницу</Typography>}
             {isAuth && <AddComment user={userData}/>}
         </Stack>
     );
