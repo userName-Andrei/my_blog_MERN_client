@@ -21,7 +21,7 @@ const Login = () => {
         password: yup.string().min(5, 'Минимум 5 символов').trim().required('Обязательное поле')
     }).nullable().required();
 
-    const { register, handleSubmit, formState:{ errors } } = useForm({
+    const { register, reset, handleSubmit, formState:{ errors } } = useForm({
         resolver: yupResolver(schema),
         mode: 'onChange'
     });
@@ -33,6 +33,7 @@ const Login = () => {
 
     const onSubmit = (data) => {
         dispatch(fetchLogin(data))
+        reset()
     };
 
     useEffect(() => {
