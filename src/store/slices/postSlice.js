@@ -66,7 +66,7 @@ export const fetchComments = createAsyncThunk(
 );
 
 export const fetchCommentsByPostId = createAsyncThunk(
-    'posts/fetchComments',
+    'posts/fetchCommentsByPostId',
     async (postId) => {
         const comments = await axios.get(`/comments/${postId}`)
 
@@ -82,7 +82,7 @@ export const createComment = createAsyncThunk(
             comment
         )
 
-        return {...comments.data, author};
+        return ({...comments.data, author});
     }
 );
 
@@ -92,6 +92,9 @@ const postSlice = createSlice({
     reducers: {
         'clearPosts': (state) => {
             state.posts.items = [];
+        },
+        'removePost': (state, action) => {
+            state.posts.items = state.posts.items.filter(post => post._id !== action.payload);
         }
     },
     extraReducers: {
@@ -162,6 +165,7 @@ const postSlice = createSlice({
             state.newComment.status = 'loading';
         },
         [createComment.fulfilled]: (state, action) => {
+            state.comments.items = [];
             state.comments.items.push(action.payload);
             state.newComment.status = 'loaded';
         },
@@ -171,6 +175,6 @@ const postSlice = createSlice({
     }
 });
 
-export const {clearPosts} = postSlice.actions;
+export const {clearPosts, removePost} = postSlice.actions;
 
 export default postSlice.reducer;
