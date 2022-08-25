@@ -1,3 +1,11 @@
+import React from 'react';
+import {Link} from 'react-router-dom';
+import {useDispatch} from 'react-redux';
+import axios from '../../utils/axios';
+
+import UserData from '../UserData';
+import SkeletonPost from './Skeleton';
+
 import { 
     Box, 
     Card, 
@@ -13,12 +21,8 @@ import CommentIcon from '@mui/icons-material/Comment';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import React from 'react';
-import {Link} from 'react-router-dom';
-import UserData from '../UserData';
-import SkeletonPost from './Skeleton';
-
 import classes from './Post.module.scss';
+import { removePost } from '../../store/slices/postSlice';
 
 const Post = ({
     id,
@@ -35,6 +39,7 @@ const Post = ({
     isFullPost
 }) => {
     const theme = useTheme();
+    const dispatch = useDispatch();
 
     const textSlicer = (text, limit) => {
         if (text.length > limit) {
@@ -43,6 +48,16 @@ const Post = ({
         }
         
         return text;
+    }
+
+    const deletePost = async (postId) => {
+        try {
+            await axios.delete(`/posts/${postId}`)
+
+            dispatch(removePost(postId))
+        } catch (error) {
+            console.warn('Не удалось удалить статью!',error)
+        }
     }
 
     if (isLoading) {
@@ -62,7 +77,10 @@ const Post = ({
                                 <EditIcon />
                             </Link>
                         </IconButton>
-                        <IconButton color="secondary">
+                        <IconButton 
+                            color="secondary"
+                            onClick={() => deletePost(id)}
+                        >
                             <DeleteIcon />
                         </IconButton>
                     </Box>
