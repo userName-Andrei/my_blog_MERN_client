@@ -1,6 +1,12 @@
 import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import { fetchPosts, fetchTags, fetchComments, fetchPostsByTag, clearPosts } from '../../store/slices/postSlice';
+import { 
+    fetchPosts, 
+    fetchTags, 
+    fetchComments, 
+    fetchPostsByTag, 
+    clearPosts
+} from '../../store/slices/postSlice';
 import {useParams} from 'react-router-dom';
 
 import {  
@@ -22,6 +28,7 @@ import dateFixer from '../../utils/dateFixer';
 const Main = () => {
     const posts = useSelector(state => state.posts.posts);
     const tags = useSelector(state => state.posts.tags);
+    const userId = useSelector(state => state.auth.user?._id);
     const comments = useSelector(state => state.posts.comments);
     const dispatch = useDispatch();
 
@@ -103,7 +110,7 @@ const Main = () => {
                                 views={post.viewsCount}
                                 comments={post.commentCount || 0}
                                 isLoading={postLoading}
-                                isEditable
+                                isEditable={post.author._id === userId}
                             />
                         )
                         
