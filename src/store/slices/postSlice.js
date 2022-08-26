@@ -44,6 +44,24 @@ export const fetchPostsByTag = createAsyncThunk(
     }
 );
 
+export const fetchPostByPostId = createAsyncThunk(
+    'posts/fetchPostByPostId',
+    async (postId) => {
+        const posts = await axios.get(`/posts/${postId}`)
+
+        return posts.data;
+    }
+);
+
+export const createPost = createAsyncThunk(
+    'posts/createPost',
+    async (data) => {
+        const post = await axios.post('/posts',data)
+
+        return post.data;
+    }
+);
+
 export const fetchTags = createAsyncThunk(
     'posts/fetchTags',
     async () => {
@@ -126,6 +144,26 @@ const postSlice = createSlice({
         },
         [fetchPostsByTag.rejected]: (state) => {
             state.posts.items = [];
+            state.posts.status = 'error';
+        },
+        [fetchPostByPostId.pending]: (state) => {
+            state.posts.status = 'loading';
+        },
+        [fetchPostByPostId.fulfilled]: (state, action) => {
+            state.posts.items = [action.payload];
+            state.posts.status = 'loaded';
+        },
+        [fetchPostByPostId.rejected]: (state) => {
+            state.posts.status = 'error';
+        },
+        [createPost.pending]: (state) => {
+            state.posts.status = 'loading';
+        },
+        [createPost.fulfilled]: (state, action) => {
+            state.posts.items = [action.payload];
+            state.posts.status = 'loaded';
+        },
+        [createPost.rejected]: (state) => {
             state.posts.status = 'error';
         },
         [fetchTags.pending]: (state) => {

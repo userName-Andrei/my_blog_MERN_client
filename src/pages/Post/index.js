@@ -1,57 +1,41 @@
 import { Stack, Typography } from '@mui/material';
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import { useParams } from 'react-router-dom';
 import AddComment from '../../components/AddComment';
 import CommentBlock from '../../components/CommentBlock';
 import ReactMarkdown from 'react-markdown';
 import Post from '../../components/Post';
-import axios from '../../utils/axios';
 import dateFixer from '../../utils/dateFixer';
 import { useDispatch, useSelector } from 'react-redux';
 import { isAuthChecker } from '../../store/slices/authSlice';
-import { fetchCommentsByPostId } from '../../store/slices/postSlice';
+import { fetchCommentsByPostId, fetchPostByPostId } from '../../store/slices/postSlice';
 
 const FullPost = () => {
     const dispatch = useDispatch();
-    const [post, setPost] = useState({item: {}, status: 'loading'});
+    const post = useSelector(state => state.posts.posts.items[0]);
+    const postStatus = useSelector(state => state.posts.posts.status);
     const comments = useSelector(state => state.posts.comments);
     const postId = useParams().id;
     const isAuth = useSelector(isAuthChecker);
     const userData = useSelector(state => state.auth.user);
 
-    const fetchPost = async () => {
-        try {
-            const response = await axios.get(`/posts/${postId}`)
-
-            setPost(state => ({
-                item: response.data,
-                status: 'loaded'
-            }))
-        } catch (error) {
-            setPost(state => ({
-                ...state,
-                status: 'error'
-            }))
-        }
-    }
-
     useEffect(() => {
-        fetchPost()
+        dispatch(fetchPostByPostId(postId))
         dispatch(fetchCommentsByPostId(postId))
     }, []);
 
     return (
         <Stack mt={10} mb={4}>
             <Post 
-                user={post.item.author} 
-                image={post.item.previewUrl}
-                postDate={dateFixer(post.item.createdAt)}
-                title={post.item.title}
-                tags={post.item.tags}
-                text={<ReactMarkdown children={post.item.text} />}
-                views={post.item.viewsCount}
-                comments={post.item.commentCount}
-                isLoading={post.status === 'loading'}
+                user={post.author} 
+                image={post.previewUrl}
+                postDate={dateFixer(post.createdAt)}
+                title={post.title}
+                tags={post.tags}
+                text={<ReactMarkdown children={post.text} />}
+                views={post.viewsCount}
+                comments={post.commentCount}
+                isLoading={postStatus === 'loading'}
                 isFullPost
             />
             <CommentBlock comments={comments.items} isLoading={comments.status === 'loading'}/>
