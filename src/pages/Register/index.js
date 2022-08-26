@@ -1,26 +1,43 @@
-import {useState, useRef} from 'react';
+import {useState, useRef, useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {useNavigate} from 'react-router-dom';
+import {useForm} from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
 import { Avatar, Box, Button, Container, IconButton, Stack, TextField, Typography } from '@mui/material';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { fetchRegister, isAuthChecker } from '../../store/slices/authSlice';
 
 const Register = () => {
-    const [formData, setFormData] = useState({
-        avatar: {},
-        name: '',
-        password: '',
-        email: '',
-        showPassword: false
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const isAuth = useSelector(isAuthChecker)
+
+    const schema = yup.object({
+        name: yup.string().min(2, 'Имя должно состоять минимум из 2 символов').trim().required('Поле не может быть пустым'),
+        password: yup.string().min(5, 'Минимум 5 символов').trim().required('Обязательное поле'),
+        email: yup.string().lowercase().trim().email('Не корректный адрес.').required('Обязательное поле')
+    }).required();
+    const {register, reset, setValue, handleSubmit, formState: {errors}} = useForm({
+        resolver: yupResolver(schema),
+        defaultValues: {
+            name: '',
+            password: '',
+            email: ''
+        },
+        mode: 'onChange'
     });
+
+    const [showPassword, setShowPassword] = useState(false);
     const [avatarUrl, setAvatarUrl] = useState("");
     const inputFileRef = useRef();
     const reader = new FileReader();
 
     const onChangeAvatar = (e) => {
-        setFormData(({
-            ...formData,
-            avatar: e.target.files[0]
-        }))
+        setValue('avatar', e.target.files[0])
 
         reader.readAsDataURL(e.target.files[0])
 
@@ -30,20 +47,32 @@ const Register = () => {
     }
 
     const onDeleteAvatar = () => {
-        setFormData(({
-            ...formData,
-            avatar: {}
-        }))
+        setValue('avatar', {})
         setAvatarUrl('')
         inputFileRef.current.value = '';
     }
 
     const handleClickShowPassword = () => {
-        setFormData(formData => ({
-            ...formData,
-            showPassword: !formData.showPassword,
-        }));
+        setShowPassword(showPassword => !showPassword);
     };
+
+    const onSubmit = (data) => {
+        const formData = new FormData();
+
+        for (let key in data) {
+            formData.append(`${key}`, data[key])
+        }
+        
+        dispatch(fetchRegister(formData))
+        onDeleteAvatar()
+        reset()
+    }
+
+    useEffect(() => {
+        if (isAuth) {
+            navigate('/')
+        }
+    }, [isAuth])
 
     return (
 
@@ -51,16 +80,12 @@ const Register = () => {
             maxWidth='xs' 
             sx={{mt: 10}}
         >
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <Stack
                     alignItems='center'
                     spacing={2}
                 >
-                    <Typography
-                        variant='h4'
-                    >
-                        Регистрация
-                    </Typography>
+                    <Typography variant='h4'>Регистрация</Typography>
                     <Avatar 
                         src={avatarUrl} 
                         alt='avatar' 
@@ -96,29 +121,40 @@ const Register = () => {
                         label="Введите ваш email" 
                         variant="outlined"
                         color='secondary' 
+                        type='email'
+                        error={errors.email?.message}
+                        helperText={errors.email?.message}
                         fullWidth 
-                        autoFocus
+                        {...register('email')}
                     />
                     <TextField 
                         label="Введите ваше имя" 
                         variant="outlined" 
                         color='secondary'
+                        type='text'
+                        error={errors.name?.message}
+                        helperText={errors.name?.message}
                         fullWidth
+                        {...register('name')}
                     />
                     <TextField 
                         label="Введите ваше пароль" 
                         variant="outlined" 
                         color='secondary'
-                        type={formData.showPassword ? 'text' : 'password'}
+                        type={showPassword ? 'text' : 'password'}
                         InputProps={{
-                            endAdornment: formData.showPassword ? <IconButton onClick={handleClickShowPassword}><VisibilityOffIcon /></IconButton> 
+                            endAdornment: showPassword ? <IconButton onClick={handleClickShowPassword}><VisibilityOffIcon /></IconButton> 
                                                                 : <IconButton onClick={handleClickShowPassword}><VisibilityIcon /></IconButton>,
-                          }}
+                        }}
+                        error={errors.password?.message}
+                        helperText={errors.password?.message}
                         fullWidth
+                        {...register('password')}
                     />
                     <Button
                         variant='contained'
                         color='secondary'
+                        type='submit'
                         fullWidth
                     >
                         Зарегистрироваться
