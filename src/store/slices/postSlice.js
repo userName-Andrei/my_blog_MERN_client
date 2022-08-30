@@ -56,7 +56,16 @@ export const fetchPostByPostId = createAsyncThunk(
 export const createPost = createAsyncThunk(
     'posts/createPost',
     async (data) => {
-        const post = await axios.post('/posts',data)
+        const post = await axios.post('/posts', data)
+
+        return post.data;
+    }
+);
+
+export const updatePost = createAsyncThunk(
+    'posts/updatePost',
+    async ({postId, data}) => {
+        const post = await axios.put(`/posts/${postId}`, data)
 
         return post.data;
     }
@@ -164,6 +173,16 @@ const postSlice = createSlice({
             state.posts.status = 'loaded';
         },
         [createPost.rejected]: (state) => {
+            state.posts.status = 'error';
+        },
+        [updatePost.pending]: (state) => {
+            state.posts.status = 'loading';
+        },
+        [updatePost.fulfilled]: (state, action) => {
+            state.posts.items = [action.payload];
+            state.posts.status = 'loaded';
+        },
+        [updatePost.rejected]: (state) => {
             state.posts.status = 'error';
         },
         [fetchTags.pending]: (state) => {
