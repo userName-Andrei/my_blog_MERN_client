@@ -18,6 +18,7 @@ import { logout, isAuthChecker } from '../store/slices/authSlice';
 const Header = () => {
     const dispatch = useDispatch();
     const isAuth = useSelector(isAuthChecker);
+    const userData = useSelector(state => state.auth.user);
     const [anchorElUser, setAnchorElUser] = useState(null);
 
     
@@ -65,7 +66,7 @@ const Header = () => {
                         </> : 
                         <>
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar />
+                                <Avatar src={userData.avatarUrl || null}/>
                             </IconButton>
                             <Menu
                                 sx={{ mt: '45px' }}
