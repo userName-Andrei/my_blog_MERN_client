@@ -17,17 +17,23 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import classes from './AddPost.module.scss';
 import "easymde/dist/easymde.min.css";
 import { clearPosts, createPost, fetchPostByPostId, updatePost } from '../../store/slices/postSlice';
+import useImagePreviewer from '../../hooks/useImagePreviewer';
 
 const AddPost = () => {
     const dispatch = useDispatch();
     const userData = useSelector(state => state.auth.user);
     const status = useSelector(state => ({name: state.posts.posts.status, message: state.posts.posts.errorMessage}));
     const navigate = useNavigate();
+    const inputFileRef = useRef();
+    const {onChangePreview, onDeletePreview, setPreviewURL, preview, previewURL} = useImagePreviewer(inputFileRef);
+    const location = useLocation().pathname.indexOf('add-post') !== -1 ? 'add-post' : 'edit';
+    const postId = useParams().id;
 
     const schema = yup.object({
         title: yup.string().trim().required('Поле не может быть пустым'),
         text: yup.string().min(10, 'Минимум 10 символов').trim().required('Обязательное поле')
     }).required();
+    
     const {reset, setValue, getValues, handleSubmit, control, formState: {errors}} = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
@@ -37,12 +43,6 @@ const AddPost = () => {
         },
         mode: 'onChange'
     });
-
-    const [preview, setPreview] = useState("");
-    const inputFileRef = useRef();
-    const location = useLocation().pathname.indexOf('add-post') !== -1 ? 'add-post' : 'edit';
-    const postId = useParams().id;
-    const reader = new FileReader();
 
     const optionsMDE = useMemo(() => ({
         spellChecker: false,
@@ -66,7 +66,7 @@ const AddPost = () => {
         if (location === 'edit') {
             dispatch(fetchPostByPostId(postId))
                 .then(({payload: {text, tags, title, previewUrl, author}}) => {
-                    setPreview(previewUrl)
+                    setPreviewURL(previewUrl)
                     setValue('title', title )
                     setValue('text', text)
                     setValue('tags', tags)
@@ -87,24 +87,10 @@ const AddPost = () => {
         setValue('text', value)
     }, [])
 
-    const onChangePreview = (e) => {
-        setValue('preview', e.target.files[0])
-
-        reader.readAsDataURL(e.target.files[0])
-
-        reader.onloadend = () => {
-            setPreview(reader.result)
-        }
-    }
-
-    const onDeletePreview = () => {
-        setValue('preview', {})
-        setPreview('')
-        inputFileRef.current.value = ''
-    }
-
     const onSubmit = (data) => {
         const formData = new FormData();
+
+        formData.append('preview', preview)
 
         for (let key in data) {
             formData.append(`${key}`, data[key])
@@ -168,13 +154,13 @@ const AddPost = () => {
                                     variant="contained" 
                                     component="label" 
                                     endIcon={<PhotoCamera/>}
-                                    color={preview ? 'error' : 'secondary'}
-                                    onClick={() => preview ? onDeletePreview() : inputFileRef.current.click()}
+                                    color={previewURL ? 'error' : 'secondary'}
+                                    onClick={() => previewURL ? onDeletePreview() : inputFileRef.current.click()}
                                     sx={{
                                         alignSelf: 'flex-start',
                                     }}
                                 >
-                                    {preview ? 'Удалить превью' : 'Загрузить превью'}
+                                    {previewURL ? 'Удалить превью' : 'Загрузить превью'}
                                 </Button>
                                 <input 
                                     name='preview'
@@ -191,7 +177,7 @@ const AddPost = () => {
                                     flex: '1 0 50%'
                                 }}
                             >
-                                {preview && <img src={preview} className={classes.preview} alt='preview' />}
+                                {previewURL && <img src={previewURL} className={classes.preview} alt='preview' />}
                             </Box>
                         </Stack>
                         <Controller 

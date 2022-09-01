@@ -10,19 +10,27 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { fetchRegister, isAuthChecker } from '../../store/slices/authSlice';
+import useImagePreviewer from '../../hooks/useImagePreviewer';
 
 const Register = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const isAuth = useSelector(isAuthChecker);
-    const status = useSelector(state => state.auth.status)
+    const status = useSelector(state => state.auth.status);
+    const inputFileRef = useRef();
+    const {
+        onChangePreview, 
+        onDeletePreview, 
+        preview, 
+        previewURL
+    } = useImagePreviewer(inputFileRef);
 
     const schema = yup.object({
         name: yup.string().min(2, 'Имя должно состоять минимум из 2 символов').trim().required('Поле не может быть пустым'),
         password: yup.string().min(5, 'Минимум 5 символов').trim().required('Обязательное поле'),
         email: yup.string().lowercase().trim().email('Не корректный адрес.').required('Обязательное поле')
     }).required();
-    const {register, reset, setValue, handleSubmit, formState: {errors}} = useForm({
+    const {register, reset, handleSubmit, formState: {errors}} = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
             name: '',
@@ -33,25 +41,6 @@ const Register = () => {
     });
 
     const [showPassword, setShowPassword] = useState(false);
-    const [avatarUrl, setAvatarUrl] = useState("");
-    const inputFileRef = useRef();
-    const reader = new FileReader();
-
-    const onChangeAvatar = (e) => {
-        setValue('avatar', e.target.files[0])
-
-        reader.readAsDataURL(e.target.files[0])
-
-        reader.onloadend = () => {
-            setAvatarUrl(reader.result)
-        }
-    }
-
-    const onDeleteAvatar = () => {
-        setValue('avatar', {})
-        setAvatarUrl('')
-        inputFileRef.current.value = '';
-    }
 
     const handleClickShowPassword = () => {
         setShowPassword(showPassword => !showPassword);
@@ -60,12 +49,14 @@ const Register = () => {
     const onSubmit = (data) => {
         const formData = new FormData();
 
+        formData.append('avatar', preview)
+
         for (let key in data) {
             formData.append(`${key}`, data[key])
         }
         
         dispatch(fetchRegister(formData))
-        onDeleteAvatar()
+        onDeletePreview()
         reset()
     }
 
@@ -88,7 +79,7 @@ const Register = () => {
                 >
                     <Typography variant='h4'>Регистрация</Typography>
                     <Avatar 
-                        src={avatarUrl} 
+                        src={previewURL || null} 
                         alt='avatar' 
                         sx={{
                             width: 96,
@@ -100,18 +91,18 @@ const Register = () => {
                             variant="contained" 
                             component="label"
                             endIcon={<PhotoCamera/>}
-                            color={avatarUrl ? 'error' : 'secondary'}
-                            onClick={() => avatarUrl ? onDeleteAvatar() : inputFileRef.current.click()}
+                            color={previewURL ? 'error' : 'secondary'}
+                            onClick={() => previewURL ? onDeletePreview() : inputFileRef.current.click()}
                             sx={{
                                 alignSelf: 'flex-start',
                             }}
                         >
-                            {avatarUrl ? 'Удалить' : 'Загрузить'}
+                            {previewURL ? 'Удалить' : 'Загрузить'}
                         </Button>
                         <input 
                             name='avatarUrl'
                             ref={inputFileRef}
-                            onChange={onChangeAvatar}
+                            onChange={onChangePreview}
                             type="file" 
                             accept="image/jpeg, image/jpg, image/png, image/giff" 
                             hidden
