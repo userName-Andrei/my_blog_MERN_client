@@ -3,19 +3,27 @@ import axios from "../../utils/axios";
 
 const initialState = {
     user: null,
-    status: 'waiting'
+    status: 'waiting',
+    errorMessage: ''
 }
 
 export const fetchLogin = createAsyncThunk(
     'auth/fetchLogin',
-    async (data) => {
-        const user = await axios.post('/auth/login', data);
+    async (data, {rejectWithValue}) => {
+        try {
+            const user = await axios.post('/auth/login', data);
 
-        if (user.data.token) {
-            window.localStorage.setItem('token', user.data.token)
+            if (user.data.token) {
+                window.localStorage.setItem('token', user.data.token)
+            }
+
+            return user.data;
+        } catch (error) {
+            if (error.request.status === 401) {
+                return rejectWithValue(error.response.data.message)
+            }
+            throw error
         }
-
-        return user.data;
     }
 )
 
@@ -54,32 +62,33 @@ const authSlice = createSlice({
     },
     extraReducers: {
         [fetchLogin.pending]: (state) => {
-            state.user = null
-            state.status = 'loading'
+            state.user = null;
+            state.status = 'loading';
         },
         [fetchLogin.fulfilled]: (state, action) => {
-            state.user = action.payload
-            state.status = 'loaded'
+            state.user = action.payload;
+            state.status = 'loaded';
         },
-        [fetchLogin.rejected]: (state) => {
-            state.user = null
-            state.status = 'error'
+        [fetchLogin.rejected]: (state, action) => {
+            state.user = null;
+            state.status = 'error';
+            state.errorMessage = action.payload;
         },
         [fetchAuth.fulfilled]: (state, action) => {
-            state.user = action.payload
-            state.status = 'loaded'
+            state.user = action.payload;
+            state.status = 'loaded';
         },
         [fetchRegister.pending]: (state) => {
-            state.user = null
-            state.status = 'loading'
+            state.user = null;
+            state.status = 'loading';
         },
         [fetchRegister.fulfilled]: (state, action) => {
-            state.user = action.payload
-            state.status = 'loaded'
+            state.user = action.payload;
+            state.status = 'loaded';
         },
         [fetchRegister.rejected]: (state) => {
-            state.user = null
-            state.status = 'error'
+            state.user = null;
+            state.status = 'error';
         }
     }
 })

@@ -4,7 +4,8 @@ import axios from '../../utils/axios';
 const initialState = {
     posts: {
         items: [],
-        status: 'loading'
+        status: 'loading',
+        errorMessage: ''
     },
     tags: {
         items: [],
@@ -22,34 +23,55 @@ const initialState = {
 
 export const fetchPosts = createAsyncThunk(
     'posts/fetchPosts',
-    async ({params}) => {
-        const posts = await axios.get(
-            '/posts',
-            {params}
-        )
-
-        return posts.data;
+    async ({params}, {rejectWithValue}) => {
+        try {
+            const posts = await axios.get(
+                '/posts',
+                {params}
+            )
+    
+            return posts.data;
+        } catch (error) {
+            if (error.request.status === 404) {
+                return rejectWithValue(error.response.data.message)
+            }
+            throw error
+        }
     }
 );
 
 export const fetchPostsByTag = createAsyncThunk(
     'posts/fetchPostsByTag',
-    async ({params, tag}) => {
-        const posts = await axios.get(
-            `/posts/tags/${tag}`,
-            {params}
-        )
-
-        return posts.data;
+    async ({params, tag}, {rejectWithValue}) => {
+        try {
+            const posts = await axios.get(
+                `/posts/tags/${tag}`,
+                {params}
+            )
+    
+            return posts.data;
+        } catch (error) {
+            if (error.request.status === 404) {
+                return rejectWithValue(error.response.data.message)
+            }
+            throw error
+        }
     }
 );
 
 export const fetchPostByPostId = createAsyncThunk(
     'posts/fetchPostByPostId',
-    async (postId) => {
-        const posts = await axios.get(`/posts/${postId}`)
+    async (postId, {rejectWithValue}) => {
+        try {
+            const posts = await axios.get(`/posts/${postId}`)
 
-        return posts.data;
+            return posts.data;
+        } catch (error) {
+            if (error.request.status === 404) {
+                return rejectWithValue(error.response.data.message)
+            }
+            throw error
+        }
     }
 );
 
@@ -73,10 +95,17 @@ export const updatePost = createAsyncThunk(
 
 export const fetchTags = createAsyncThunk(
     'posts/fetchTags',
-    async () => {
-        const tags = await axios.get('/posts/tags/all')
+    async (_, {rejectWithValue}) => {
+        try {
+            const tags = await axios.get('/posts/tags/all')
 
-        return tags.data;
+            return tags.data;
+        } catch (error) {
+            if (error.request.status === 404) {
+                return rejectWithValue(error.response.data.message)
+            }
+            throw error
+        }
     }
 );
 
@@ -119,6 +148,7 @@ const postSlice = createSlice({
     reducers: {
         'clearPosts': (state) => {
             state.posts.items = [];
+            state.posts.status = 'loading';
         },
         'removePost': (state, action) => {
             state.posts.items = state.posts.items.filter(post => post._id !== action.payload);
@@ -136,9 +166,10 @@ const postSlice = createSlice({
                 state.posts.status = 'loaded';
             }
         },
-        [fetchPosts.rejected]: (state) => {
+        [fetchPosts.rejected]: (state, action) => {
             state.posts.items = [];
             state.posts.status = 'error';
+            state.posts.errorMessage = action.payload;
         },
         [fetchPostsByTag.pending]: (state) => {
             state.posts.status = 'loading';
@@ -151,9 +182,10 @@ const postSlice = createSlice({
                 state.posts.status = 'loaded';
             }
         },
-        [fetchPostsByTag.rejected]: (state) => {
+        [fetchPostsByTag.rejected]: (state, action) => {
             state.posts.items = [];
             state.posts.status = 'error';
+            state.posts.errorMessage = action.payload;
         },
         [fetchPostByPostId.pending]: (state) => {
             state.posts.status = 'loading';
@@ -162,8 +194,9 @@ const postSlice = createSlice({
             state.posts.items = [action.payload];
             state.posts.status = 'loaded';
         },
-        [fetchPostByPostId.rejected]: (state) => {
+        [fetchPostByPostId.rejected]: (state, action) => {
             state.posts.status = 'error';
+            state.posts.errorMessage = action.payload;
         },
         [createPost.pending]: (state) => {
             state.posts.status = 'loading';
@@ -192,9 +225,10 @@ const postSlice = createSlice({
             state.tags.items = action.payload.slice(0, 5);
             state.tags.status = 'loaded';
         },
-        [fetchTags.rejected]: (state) => {
+        [fetchTags.rejected]: (state, action) => {
             state.tags.items = [];
             state.tags.status = 'error';
+            state.posts.errorMessage = action.payload;
         },
         [fetchComments.pending]: (state) => {
             state.comments.status = 'loading';

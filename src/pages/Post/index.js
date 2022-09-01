@@ -13,7 +13,7 @@ import { clearPosts, fetchCommentsByPostId, fetchPostByPostId } from '../../stor
 const FullPost = () => {
     const dispatch = useDispatch();
     const post = useSelector(state => state.posts.posts.items[0]);
-    const postStatus = useSelector(state => state.posts.posts.status);
+    const postStatus = useSelector(state => ({name: state.posts.posts.status, message: state.posts.posts.errorMessage}));
     const comments = useSelector(state => state.posts.comments);
     const postId = useParams().id;
     const isAuth = useSelector(isAuthChecker);
@@ -25,31 +25,52 @@ const FullPost = () => {
         dispatch(fetchCommentsByPostId(postId))
     }, []);
 
+    const renderPost = (post, postStatus) => {
+        if (postStatus.name === 'error') {
+            return (
+                <Typography 
+                    variant='h4' 
+                    color='error' 
+                    textAlign='center'
+                    gutterBottom
+                >
+                    {postStatus.message || 'Произошла ошибка! Попробуйте обновить страницу.'}
+                </Typography>
+            )
+        }
+
+        if (postStatus.name === 'loading') {
+            return (
+                <Post 
+                    isLoading={postStatus.name === 'loading'}
+                    isFullPost
+                />
+            )
+        }
+
+        return (
+            <Post 
+                user={post.author} 
+                image={post.previewUrl}
+                postDate={dateFixer(post.createdAt)}
+                title={post.title}
+                tags={post.tags}
+                text={<ReactMarkdown children={post.text} />}
+                views={post.viewsCount}
+                comments={post.commentCount}
+                isFullPost
+            /> 
+        )
+    }
+
     return (
         <Stack mt={10} mb={4}>
-            {!post
-            ?
-                <Post 
-                    isLoading={postStatus === 'loading'}
-                    isFullPost
-                />
-            :
-                <Post 
-                    user={post.author} 
-                    image={post.previewUrl}
-                    postDate={dateFixer(post.createdAt)}
-                    title={post.title}
-                    tags={post.tags}
-                    text={<ReactMarkdown children={post.text} />}
-                    views={post.viewsCount}
-                    comments={post.commentCount}
-                    isLoading={postStatus === 'loading'}
-                    isFullPost
-                />
-            }
-            <CommentBlock comments={comments.items} isLoading={comments.status === 'loading'}/>
-            {comments.status === 'error' && <Typography variant='body1' color='error' ml={2} mb={2}>Произошла ошибка, попробуйте перезагрузить страницу</Typography>}
-            {isAuth && <AddComment user={userData}/>}
+            {renderPost(post, postStatus)}
+            {postStatus.name !== 'error' && <>
+                <CommentBlock comments={comments.items} isLoading={comments.status === 'loading'}/>
+                {comments.status === 'error' && <Typography variant='body1' color='error' ml={2} mb={2}>Произошла ошибка, попробуйте перезагрузить страницу</Typography>}
+                {isAuth && <AddComment user={userData}/>}
+            </>}
         </Stack>
     );
 };

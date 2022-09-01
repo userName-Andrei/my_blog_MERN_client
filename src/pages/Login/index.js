@@ -12,7 +12,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const Login = () => {
     const dispatch = useDispatch();
-    const status = useSelector(state => state.auth.status);
+    const status = useSelector(state => ({name:state.auth.status, message: state.auth.errorMessage}));
     const isAuth = useSelector(isAuthChecker);
     const navigate = useNavigate();
 
@@ -82,15 +82,16 @@ const Login = () => {
                           }}
                         fullWidth
                     />
-                    {status === 'error' && <Typography variant='body1' color='error' my={2}>Произошла ошибка. Попробуйте позже</Typography>}
+                    {status.name === 'error' && !status.message ? <Typography variant='body1' color='error' my={2}>Произошла ошибка. Попробуйте позже</Typography>
+                                                               : <Typography variant='body1' color='error' my={2}>{status.message}</Typography>}
                     <Button
                         variant='contained'
                         color='secondary'
                         type='submit'
                         fullWidth
-                        disabled={status === 'loading'}
+                        disabled={status.name === 'loading'}
                     >
-                        {status === 'loading' ? 'Загрузка...' : 'Войти'}
+                        {status.name === 'loading' ? 'Загрузка...' : 'Войти'}
                     </Button>
                 </Stack>
             </form>

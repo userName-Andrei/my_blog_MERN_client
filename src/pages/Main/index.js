@@ -33,7 +33,7 @@ const Main = () => {
     const dispatch = useDispatch();
 
     const [newPostsLoading, setNewPostsLoading] = useState(true);
-    const postLoading = posts.status !== 'loaded' && newPostsLoading;
+    const postLoading = posts.status === 'loading' && newPostsLoading;
     const tagLoading = tags.status !== 'loaded';
     const commentLoading = comments.status !== 'loaded';
     const param = useParams().tag;
@@ -45,7 +45,7 @@ const Main = () => {
         dispatch(fetchComments({params: {limit: 5}}));
     }, [param]);
 
-    const getPosts = (lastpost = 0, limit = 5) => {
+    const getPosts = (lastpost = 0, limit = 2) => {
         
         if (param) {
             dispatch(fetchPostsByTag({
@@ -64,6 +64,47 @@ const Main = () => {
     const getNextPosts = (lastpost = posts.items.length) => {
         setNewPostsLoading(false);
         getPosts(lastpost);
+    }
+
+    const renderPosts = (posts, postLoading) => {
+
+        if (posts.status === 'error') {
+            return (
+                <Typography 
+                variant='h4' 
+                color='error' 
+                textAlign='center'
+                gutterBottom
+                >
+                    {posts.errorMessage || 'Произошла ошибка! Повторите попытку позднее.'}
+                </Typography>
+            )
+        }
+
+        if (postLoading) {
+            return [...Array(5)].map((post, i) => (
+                <Post 
+                    key={i}
+                    isLoading={postLoading}
+                />
+            ))
+        }
+
+        return posts.items.map((post, i) => (<Post 
+                key={i}
+                id={post._id}
+                user={post.author} 
+                image={post.previewUrl}
+                postDate={dateFixer(post.createdAt)}
+                title={post.title}
+                tags={post.tags}
+                text={post.text}
+                views={post.viewsCount}
+                comments={post.commentCount || 0}
+                isLoading={postLoading}
+                isEditable={post.author._id === userId}
+            />)
+        )
     }
 
     return (
@@ -90,31 +131,7 @@ const Main = () => {
                 wrap='wrap-reverse'
             >
                 <Grid item xs={12} sm={7} md={8}>
-                    {(postLoading ? [...Array(5)] : posts.items).map((post, i) => (
-                        postLoading 
-                        ? (
-                            <Post 
-                                key={i}
-                                isLoading={postLoading}
-                            />
-                        ) : (
-                            <Post 
-                                key={i}
-                                id={post._id}
-                                user={post.author} 
-                                image={post.previewUrl}
-                                postDate={dateFixer(post.createdAt)}
-                                title={post.title}
-                                tags={post.tags}
-                                text={post.text}
-                                views={post.viewsCount}
-                                comments={post.commentCount || 0}
-                                isLoading={postLoading}
-                                isEditable={post.author._id === userId}
-                            />
-                        )
-                        
-                    ))}
+                    {renderPosts(posts, postLoading)}
                     <Stack
                         justifyContent="center"
                         direction="row"
@@ -124,7 +141,7 @@ const Main = () => {
                             variant='contained' 
                             color='secondary'
                             size='small'
-                            disabled={posts.status === 'posts over' || postLoading}
+                            disabled={posts.status === 'posts over' || postLoading || posts.status === 'error'}
                             onClick={() => getNextPosts()}
                         >
                             Ещё

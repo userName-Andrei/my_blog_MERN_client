@@ -14,7 +14,8 @@ import { fetchRegister, isAuthChecker } from '../../store/slices/authSlice';
 const Register = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const isAuth = useSelector(isAuthChecker)
+    const isAuth = useSelector(isAuthChecker);
+    const status = useSelector(state => state.auth.status)
 
     const schema = yup.object({
         name: yup.string().min(2, 'Имя должно состоять минимум из 2 символов').trim().required('Поле не может быть пустым'),
@@ -151,6 +152,7 @@ const Register = () => {
                         fullWidth
                         {...register('password')}
                     />
+                    {status === 'error' && <Typography variant='body1' color='error' my={2}>Произошла ошибка. Попробуйте позже</Typography>}
                     <Button
                         variant='contained'
                         color='secondary'

@@ -21,6 +21,7 @@ import { clearPosts, createPost, fetchPostByPostId, updatePost } from '../../sto
 const AddPost = () => {
     const dispatch = useDispatch();
     const userData = useSelector(state => state.auth.user);
+    const status = useSelector(state => ({name: state.posts.posts.status, message: state.posts.posts.errorMessage}));
     const navigate = useNavigate();
 
     const schema = yup.object({
@@ -138,96 +139,108 @@ const AddPost = () => {
                 mb: 4
             }}
         >
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <Stack 
-                    spacing={2}
+            {status.name === 'error' && 
+                <Typography 
+                    variant='h4' 
+                    color='error' 
+                    textAlign='center'
+                    gutterBottom
                 >
+                    {status.message || 'Произошла ошибка! Попробуйте обновить страницу.'}
+                </Typography>
+            }
+            {status.name !== 'error' && 
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <Stack 
-                        direction='row' 
                         spacing={2}
                     >
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flex: '1 0 50%'
-                            }}
+                        <Stack 
+                            direction='row' 
+                            spacing={2}
                         >
-                            <Button 
-                                variant="contained" 
-                                component="label" 
-                                endIcon={<PhotoCamera/>}
-                                color={preview ? 'error' : 'secondary'}
-                                onClick={() => preview ? onDeletePreview() : inputFileRef.current.click()}
+                            <Box
                                 sx={{
-                                    alignSelf: 'flex-start',
+                                    display: 'flex',
+                                    flex: '1 0 50%'
                                 }}
                             >
-                                {preview ? 'Удалить превью' : 'Загрузить превью'}
-                            </Button>
-                            <input 
-                                name='preview'
-                                ref={inputFileRef}
-                                onChange={onChangePreview}
-                                type="file" 
-                                accept="image/jpeg, image/jpg,image/png" 
-                                hidden
-                                multiple 
-                            />
-                        </Box>
-                        <Box
-                            sx={{
-                                flex: '1 0 50%'
-                            }}
+                                <Button 
+                                    variant="contained" 
+                                    component="label" 
+                                    endIcon={<PhotoCamera/>}
+                                    color={preview ? 'error' : 'secondary'}
+                                    onClick={() => preview ? onDeletePreview() : inputFileRef.current.click()}
+                                    sx={{
+                                        alignSelf: 'flex-start',
+                                    }}
+                                >
+                                    {preview ? 'Удалить превью' : 'Загрузить превью'}
+                                </Button>
+                                <input 
+                                    name='preview'
+                                    ref={inputFileRef}
+                                    onChange={onChangePreview}
+                                    type="file" 
+                                    accept="image/jpeg, image/jpg,image/png" 
+                                    hidden
+                                    multiple 
+                                />
+                            </Box>
+                            <Box
+                                sx={{
+                                    flex: '1 0 50%'
+                                }}
+                            >
+                                {preview && <img src={preview} className={classes.preview} alt='preview' />}
+                            </Box>
+                        </Stack>
+                        <Controller 
+                            control={control}
+                            name='title'
+                            render={({field: {onChange, value}}) => (
+                                <TextField 
+                                    variant="standard"
+                                    label='Введите заголовок статьи'
+                                    color='secondary'
+                                    value={value}
+                                    onChange={onChange}
+                                    maxRows={3}
+                                    error={errors.title}
+                                    helperText={errors.title?.message}
+                                    multiline
+                                    autoFocus
+                                />
+                            )}
+                        />
+                        <Controller 
+                            control={control}
+                            name='tags'
+                            render={({field: {onChange, value}}) => (
+                                <TextField 
+                                    variant="standard"
+                                    name='tags'
+                                    label='Введите теги к статье'
+                                    color='secondary'
+                                    value={value}
+                                    onChange={onChange}
+                                    error={errors.title}
+                                    helperText={errors.title ? `${errors.title?.message}` : 'через запятую'}
+                                    multiline
+                                />
+                            )}
+                        />
+                        <SimpleMDE className={classes.editor} value={getValues('text')} options={optionsMDE} onChange={onChangeMDE} />
+                        {errors.text && <Typography variant='caption' color='error'>{errors.text?.message}</Typography>}
+                        <Button
+                            variant="contained"
+                            color='secondary'
+                            type='submit'
                         >
-                            {preview && <img src={preview} className={classes.preview} alt='preview' />}
-                        </Box>
+                            {location === 'add-post' ? 'Сохранить' : 'Измененить'}
+                        </Button>
                     </Stack>
-                    <Controller 
-                        control={control}
-                        name='title'
-                        render={({field: {onChange, value}}) => (
-                            <TextField 
-                                variant="standard"
-                                label='Введите заголовок статьи'
-                                color='secondary'
-                                value={value}
-                                onChange={onChange}
-                                maxRows={3}
-                                error={errors.title}
-                                helperText={errors.title?.message}
-                                multiline
-                                autoFocus
-                            />
-                        )}
-                    />
-                    <Controller 
-                        control={control}
-                        name='tags'
-                        render={({field: {onChange, value}}) => (
-                            <TextField 
-                                variant="standard"
-                                name='tags'
-                                label='Введите теги к статье'
-                                color='secondary'
-                                value={value}
-                                onChange={onChange}
-                                error={errors.title}
-                                helperText={errors.title ? `${errors.title?.message}` : 'через запятую'}
-                                multiline
-                            />
-                        )}
-                    />
-                    <SimpleMDE className={classes.editor} value={getValues('text')} options={optionsMDE} onChange={onChangeMDE} />
-                    {errors.text && <Typography variant='caption' color='error'>{errors.text?.message}</Typography>}
-                    <Button
-                        variant="contained"
-                        color='secondary'
-                        type='submit'
-                    >
-                        {location === 'add-post' ? 'Сохранить' : 'Измененить'}
-                    </Button>
-                </Stack>
-            </form>
+                </form>
+            }
         </Container>
     );
 };
