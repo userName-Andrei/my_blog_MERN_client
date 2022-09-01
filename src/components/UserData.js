@@ -15,11 +15,14 @@ const UserData = (props) => {
                     <>
                         {postDate}
                         {children && 
-                            <Box mt={1}>
+                            <Box 
+                                mt={1}
+                                overflow='hidden'
+                            >
                                 <Typography 
                                     variant='body2' 
                                     color='text.primary'
-                                    component='span'
+                                    component='p'
                                 >
                                     {children}
                                 </Typography>
