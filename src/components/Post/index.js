@@ -4,6 +4,7 @@ import {useDispatch} from 'react-redux';
 import axios from '../../utils/axios';
 import textSlicer from '../../utils/textSlicer';
 import { removePost } from '../../store/slices/postSlice';
+import ReactMarkdown from 'react-markdown';
 
 import UserData from '../UserData';
 import SkeletonPost from './Skeleton';
@@ -126,7 +127,7 @@ const Post = ({
                 </Stack>
                 <CardContent>
                     <Typography mb={1}>
-                        {isFullPost ? text : <Link to={`/posts/${id}`}>{sliceText}</Link>}
+                        {isFullPost ? <ReactMarkdown children={text} /> : <Link to={`/posts/${id}`}><ReactMarkdown children={sliceText} /></Link>}
                     </Typography>
                     <Stack direction='row' spacing={1}>
                         {tags.map((tag, i) => (

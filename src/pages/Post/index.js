@@ -3,7 +3,6 @@ import {useEffect} from 'react';
 import { useParams } from 'react-router-dom';
 import AddComment from '../../components/AddComment';
 import CommentBlock from '../../components/CommentBlock';
-import ReactMarkdown from 'react-markdown';
 import Post from '../../components/Post';
 import dateFixer from '../../utils/dateFixer';
 import { useDispatch, useSelector } from 'react-redux';
@@ -55,7 +54,7 @@ const FullPost = () => {
                 postDate={dateFixer(post.createdAt)}
                 title={post.title}
                 tags={post.tags}
-                text={<ReactMarkdown children={post.text} />}
+                text={post.text}
                 views={post.viewsCount}
                 comments={post.commentCount}
                 isFullPost
