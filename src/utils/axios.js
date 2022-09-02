@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // пользовательская конфигурация
 const instance = axios.create({
-    baseURL: 'http://localhost:4000/'
+    baseURL: 'https://my-blog-serverpart.herokuapp.com/'
 });
 
 // перехват запроса перед отправкой на сервер и добавление в заголовок токена
