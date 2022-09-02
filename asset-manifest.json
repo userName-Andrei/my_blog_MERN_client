@@ -1,0 +1,38 @@
+{
+  "files": {
+    "main.css": "/my_blog_MERN_client/static/css/main.f9419820.css",
+    "main.js": "/my_blog_MERN_client/static/js/main.d07e0875.js",
+    "static/css/380.3765959a.chunk.css": "/my_blog_MERN_client/static/css/380.3765959a.chunk.css",
+    "static/js/380.2e8f9015.chunk.js": "/my_blog_MERN_client/static/js/380.2e8f9015.chunk.js",
+    "static/css/30.3765959a.chunk.css": "/my_blog_MERN_client/static/css/30.3765959a.chunk.css",
+    "static/js/30.7f85a3b5.chunk.js": "/my_blog_MERN_client/static/js/30.7f85a3b5.chunk.js",
+    "static/css/983.842e9082.chunk.css": "/my_blog_MERN_client/static/css/983.842e9082.chunk.css",
+    "static/js/983.9a74519b.chunk.js": "/my_blog_MERN_client/static/js/983.9a74519b.chunk.js",
+    "static/js/467.5e25145f.chunk.js": "/my_blog_MERN_client/static/js/467.5e25145f.chunk.js",
+    "static/js/536.99548f7c.chunk.js": "/my_blog_MERN_client/static/js/536.99548f7c.chunk.js",
+    "static/js/612.2ee7cdb0.chunk.js": "/my_blog_MERN_client/static/js/612.2ee7cdb0.chunk.js",
+    "static/js/234.e1e9b3ac.chunk.js": "/my_blog_MERN_client/static/js/234.e1e9b3ac.chunk.js",
+    "static/js/216.db1bc8b6.chunk.js": "/my_blog_MERN_client/static/js/216.db1bc8b6.chunk.js",
+    "static/js/401.db3f46fc.chunk.js": "/my_blog_MERN_client/static/js/401.db3f46fc.chunk.js",
+    "static/media/marked.cjs": "/my_blog_MERN_client/static/media/marked.98c687802f27b5607a57.cjs",
+    "index.html": "/my_blog_MERN_client/index.html",
+    "main.f9419820.css.map": "/my_blog_MERN_client/static/css/main.f9419820.css.map",
+    "main.d07e0875.js.map": "/my_blog_MERN_client/static/js/main.d07e0875.js.map",
+    "380.3765959a.chunk.css.map": "/my_blog_MERN_client/static/css/380.3765959a.chunk.css.map",
+    "380.2e8f9015.chunk.js.map": "/my_blog_MERN_client/static/js/380.2e8f9015.chunk.js.map",
+    "30.3765959a.chunk.css.map": "/my_blog_MERN_client/static/css/30.3765959a.chunk.css.map",
+    "30.7f85a3b5.chunk.js.map": "/my_blog_MERN_client/static/js/30.7f85a3b5.chunk.js.map",
+    "983.842e9082.chunk.css.map": "/my_blog_MERN_client/static/css/983.842e9082.chunk.css.map",
+    "983.9a74519b.chunk.js.map": "/my_blog_MERN_client/static/js/983.9a74519b.chunk.js.map",
+    "467.5e25145f.chunk.js.map": "/my_blog_MERN_client/static/js/467.5e25145f.chunk.js.map",
+    "536.99548f7c.chunk.js.map": "/my_blog_MERN_client/static/js/536.99548f7c.chunk.js.map",
+    "612.2ee7cdb0.chunk.js.map": "/my_blog_MERN_client/static/js/612.2ee7cdb0.chunk.js.map",
+    "234.e1e9b3ac.chunk.js.map": "/my_blog_MERN_client/static/js/234.e1e9b3ac.chunk.js.map",
+    "216.db1bc8b6.chunk.js.map": "/my_blog_MERN_client/static/js/216.db1bc8b6.chunk.js.map",
+    "401.db3f46fc.chunk.js.map": "/my_blog_MERN_client/static/js/401.db3f46fc.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f9419820.css",
+    "static/js/main.d07e0875.js"
+  ]
+}
