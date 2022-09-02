@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {Link} from 'react-router-dom';
 import {useDispatch} from 'react-redux';
 import axios from '../../utils/axios';
+import textSlicer from '../../utils/textSlicer';
+import { removePost } from '../../store/slices/postSlice';
 
 import UserData from '../UserData';
 import SkeletonPost from './Skeleton';
@@ -22,7 +24,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import classes from './Post.module.scss';
-import { removePost } from '../../store/slices/postSlice';
 
 const Post = ({
     id,
@@ -41,14 +42,7 @@ const Post = ({
     const theme = useTheme();
     const dispatch = useDispatch();
 
-    const textSlicer = (text, limit) => {
-        if (text.length > limit) {
-            text = text.slice(0, limit).split(' ');
-            return text.slice(0, text.length - 1).join(' ') + '...';
-        }
-        
-        return text;
-    }
+    const sliceText = useMemo(() => textSlicer(text, 100), [text]);
 
     const deletePost = async (postId) => {
         try {
@@ -132,7 +126,7 @@ const Post = ({
                 </Stack>
                 <CardContent>
                     <Typography mb={1}>
-                        {isFullPost ? text : <Link to={`/posts/${id}`}>{textSlicer(text, 100)}</Link>}
+                        {isFullPost ? text : <Link to={`/posts/${id}`}>{sliceText}</Link>}
                     </Typography>
                     <Stack direction='row' spacing={1}>
                         {tags.map((tag, i) => (

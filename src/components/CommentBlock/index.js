@@ -1,5 +1,5 @@
 import { Divider, List, Typography } from '@mui/material';
-import React from 'react';
+import React, {memo} from 'react';
 import CommentItem from '../CommentItem';
 import dateFixer from '../../utils/dateFixer'
 
@@ -37,4 +37,4 @@ const CommentBlock = ({comments, isLoading}) => {
     );
 };
 
-export default CommentBlock;
+export default memo(CommentBlock);

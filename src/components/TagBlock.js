@@ -6,7 +6,7 @@ import {
     Typography 
 } from '@mui/material';
 import TagIcon from "@mui/icons-material/Tag";
-import React from 'react';
+import React, {memo} from 'react';
 import { Link } from 'react-router-dom';
 
 const TagBlock = ({tags, isLoading}) => {
@@ -40,4 +40,4 @@ const TagBlock = ({tags, isLoading}) => {
     );
 };
 
-export default TagBlock;
+export default memo(TagBlock);
