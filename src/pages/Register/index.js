@@ -49,11 +49,11 @@ const Register = () => {
     const onSubmit = (data) => {
         const formData = new FormData();
 
-        formData.append('avatar', preview)
-
         for (let key in data) {
             formData.append(`${key}`, data[key])
         }
+
+        formData.append('avatar', preview)
         
         dispatch(fetchRegister(formData))
         onDeletePreview()
