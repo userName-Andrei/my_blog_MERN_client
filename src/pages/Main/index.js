@@ -8,6 +8,7 @@ import {
     clearPosts
 } from '../../store/slices/postSlice';
 import {useParams} from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 
 import {  
     Box,
@@ -98,7 +99,7 @@ const Main = () => {
                 postDate={dateFixer(post.createdAt)}
                 title={post.title}
                 tags={post.tags}
-                text={post.text}
+                text={<ReactMarkdown children={post.text} />}
                 views={post.viewsCount}
                 comments={post.commentCount || 0}
                 isLoading={postLoading}
