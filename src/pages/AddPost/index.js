@@ -89,12 +89,12 @@ const AddPost = () => {
 
     const onSubmit = (data) => {
         const formData = new FormData();
-
-        formData.append('preview', preview)
-
+        
         for (let key in data) {
             formData.append(`${key}`, data[key])
         }
+
+        formData.append('preview', preview)
         
         if (location === 'add-post') {
             dispatch(createPost(formData))
