@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // пользовательская конфигурация
 const instance = axios.create({
-    baseURL: 'https://my-blog-serverpart.herokuapp.com/'
+    baseURL: 'https://my-blog-mern-server.onrender.com/'
 });
 
 // перехват запроса перед отправкой на сервер и добавление в заголовок токена
