@@ -11,6 +11,7 @@ front - github pages;
 # Используемые технологии:
 
 Frontend - React, Redux(toolkit), React router, Material UI;
+
 Backend - Node.js, Express, MongoDB Atlas, Mongoose;
 
 # Функционал
